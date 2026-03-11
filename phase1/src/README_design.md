@@ -1,5 +1,5 @@
 
-# Design Sketch - Food Tracker
+# Design Sketch - Food Tracker // 04.03.2026.
 
 ## Class Descriptions
 
@@ -27,4 +27,15 @@ The MVC pattern separates the view from the logic, making maintenance and future
 
 ## Diagrams
 
+
 The class diagram and sequence diagrams are located in the `docs/` folder as images.
+
+## Contributions // 11.03.2026.
+
+Team Contributions for this week:
+
+Denis Keselj : Created and structured the foods.csv file, including all basic foods and recipes. Ensured the format followed project requirements, with no forward references and unique food names.
+
+Gabriel Muskaj: Managed the log.csv file for daily food intake, weights, and calorie targets. Implemented the tracking of calories, macronutrient distribution, and weight trends over time.
+
+Marko Obsivac: Designed and implemented the Composite and MVC patterns. Made sure that both basic foods and recipes could be treated uniformly, and structured the project so the model, view, and controller communicate effectively.
