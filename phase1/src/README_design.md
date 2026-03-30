@@ -1,7 +1,7 @@
 
 # Design Sketch - Food Tracker // 04.03.2026.
 
-## Class Descriptions
+## Class Descriptions and contributions
 
 FoodComponent: Abstract class representing a food item or a recipe. Contains methods to get calories and nutrients.
 
@@ -39,3 +39,26 @@ Denis Keselj : Created and structured the foods.csv file, including all basic fo
 Gabriel Muskaj: Managed the log.csv file for daily food intake, weights, and calorie targets. Implemented the tracking of calories, macronutrient distribution, and weight trends over time.
 
 Marko Obsivac: Designed and implemented the Composite and MVC patterns. Made sure that both basic foods and recipes could be treated uniformly, and structured the project so the model, view, and controller communicate effectively.
+
+## Contributions // 25.03.2026.
+
+Team Contributions for this week:
+
+Denis Keselj: started with Java implementation, shared the tasks, and started to work on AppController java file, implementing MVC pattern, a Fooditem interface java file after submitting a version1 of the code files 
+
+Gabriel Muskaj: after submitting log.csv file on /src folder, started with java. First he made Nutrients java file, and submitted on version1 folder in the /src folder, and then started to work on logManager java file
+
+Marko Obsivac: strted to work on java, made the version1 of the FoodCollection, Recipe and BasicFood java file, and started to finish it to make the final version.
+
+## Contributions // 30.03.2026.
+
+Team Contributions for this week:
+
+Denis Keselj: started editing the version 1 of the java files, finishing the appcontroller and main java files, and putting all of the together to test the files.
+
+Gabriel Muskaj: submitting the logManager file, and starting with Marko Obsivac to work on the presentation of the project.
+
+Marko  Obsivac: finishing his files to the final version, submits them on /src folder as source code, and starts to work on presentation.
+
+
+
