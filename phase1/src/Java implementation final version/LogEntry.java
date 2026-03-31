@@ -1,6 +1,8 @@
-
-
-public class LogEntry { //made by Gabirel Muskaj
+ /**
+  * presenting a single food entry in a day.
+  * storing the food and number of servings.
+  */
+public class LogEntry {
 
     private final FoodItem food;
     private final double servings;

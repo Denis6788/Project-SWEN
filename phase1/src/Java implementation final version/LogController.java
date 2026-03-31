@@ -1,9 +1,8 @@
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
-// made by Gabriel Muskaj
+// This class controls user interaction 
 public class LogController {
 
     private final FoodCollection foodCollection;

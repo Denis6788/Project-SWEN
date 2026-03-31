@@ -1,8 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class Recipe implements FoodItem { //made by Marko Obsivac
+/**
+ * Composite node in the Composite pattern.
+ * Computes nutrition recursively from its ingredients.
+ * Ingredients can be BasicFood or other Recipes (sub-recipes).
+ */
+public class Recipe implements FoodItem {
     private final String name;
     private final List<IngredientEntry> ingredients = new ArrayList<>();
 
@@ -36,7 +40,7 @@ public class Recipe implements FoodItem { //made by Marko Obsivac
         return total;
     }
 
-   
+    /** r,name,f1name,f1count,f2name,f2count,... */
     @Override
     public String toCSV() {
         StringBuilder sb = new StringBuilder("r,").append(name);

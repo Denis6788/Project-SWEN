@@ -1,5 +1,3 @@
-
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,19 +11,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Manages all daily logs.
+ * Loads from and saves to log.csv.
+ */
 public class LogManager {
 
+    // storing logs by date 
     private final Map<LocalDate, DailyLog> logs = new HashMap<>();
 
     public DailyLog getOrCreate(LocalDate date) {
         return logs.computeIfAbsent(date, d -> new DailyLog(d));
     }
 
-   
+    // getting log 
     public DailyLog getLog(LocalDate date) {
         return logs.get(date);
     }
 
+    // reading log.csv and filling the logs map, also clearing old logs
     public void load(String filePath, FoodCollection foodCollection) throws IOException {
         logs.clear(); 
 
@@ -51,19 +55,19 @@ public class LogManager {
 
                 switch (type) {
                     case "w":
-                        
+                        // weight entry
                         double weight = Double.parseDouble(parts[4].trim());
                         log.setWeight(weight);
                         break;
 
                     case "c":
-                        
+                        // calorie limit entry
                         double calories = Double.parseDouble(parts[4].trim());
                         log.setCalorieLimit(calories);
                         break;
 
                     case "f":
-                       
+                        // food entry
                         String foodName = parts[4].trim();
                         double servings = Double.parseDouble(parts[5].trim());
                         FoodItem food = foodCollection.findFood(foodName);
@@ -81,7 +85,7 @@ public class LogManager {
         applyDefaults();
     }
 
-   
+    // applying rules for weight and calorie limit if missing
     private void applyDefaults() {
         double lastWeight = 150.0;     
         double lastCalories = 2000.0;  
@@ -92,7 +96,7 @@ public class LogManager {
         for (LocalDate date : dates) {
             DailyLog log = logs.get(date);
 
-         
+            // If no weight and calorie limit, it uses last known weight and limit
             if (!log.hasWeight()) {
                 log.setWeight(lastWeight);
             } else {
@@ -107,11 +111,11 @@ public class LogManager {
         }
     }
 
-  
+    // writting all logs into log.csv
     public void save(String filePath) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
 
-           
+            // sorting dates before saving
             List<LocalDate> dates = new ArrayList<>(logs.keySet());
             Collections.sort(dates);
 
@@ -122,15 +126,15 @@ public class LogManager {
                 int m = date.getMonthValue();
                 int d = date.getDayOfMonth();
 
-              
+                // writting weight
                 writer.write(String.format("%d,%02d,%02d,w,%.1f", y, m, d, log.getWeight()));
                 writer.newLine();
 
-               
+                // writing calorie limit
                 writer.write(String.format("%d,%02d,%02d,c,%.1f", y, m, d, log.getCalorieLimit()));
                 writer.newLine();
 
-             
+                // writing each food entry
                 for (LogEntry entry : log.getEntries()) {
                     writer.write(String.format("%d,%02d,%02d,f,%s,%.1f",
                             y, m, d,
@@ -140,10 +144,5 @@ public class LogManager {
                 }
             }
         }
-    }
-
-    public void addEntry(LocalDate currentDate, FoodItem food, double servings) {
-       
-        throw new UnsupportedOperationException("Unimplemented method 'addEntry'");
     }
 }

@@ -1,16 +1,32 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
+/**
+ * Manages all foods in the system.
+ * Loads from and saves to foods.csv.
+ *
+ * CSV format:
+ *   b,name,calories,fat,carb,protein
+ *   r,name,f1name,f1count,f2name,f2count,...
+ *
+ * No forward references — recipe ingredients must appear earlier in the file.
+ */
+public class FoodCollection {
 
-public class FoodCollection { //made by Marko Obsivac
-    
     private final LinkedHashMap<String, FoodItem> foods = new LinkedHashMap<>();
     private final List<Runnable> changeListeners = new ArrayList<>();
 
     public void addChangeListener(Runnable listener) { changeListeners.add(listener); }
     private void notifyListeners() { for (Runnable r : changeListeners) r.run(); }
 
-   
+    // Collection operations 
 
     public void addFood(FoodItem food) {
         if (foods.containsKey(food.getName()))
@@ -23,7 +39,7 @@ public class FoodCollection { //made by Marko Obsivac
     public List<FoodItem> getAllFoods()       { return new ArrayList<>(foods.values()); }
     public int size()                         { return foods.size(); }
 
-   
+    //  Load from CSV 
 
     public void load(String filePath) throws IOException {
         foods.clear();
@@ -98,7 +114,13 @@ public class FoodCollection { //made by Marko Obsivac
             throw new IllegalArgumentException("Line " + lineNum + ": duplicate name '" + name + "'");
     }
 
-   
+    //  Save to CSV 
+
+    /**
+     * Saves all foods to foods.csv.
+     * LinkedHashMap preserves insertion order, which already satisfies
+     * the no-forward-reference constraint since load() enforces it.
+     */
     public void save(String filePath) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             for (FoodItem food : foods.values()) {

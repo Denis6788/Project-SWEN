@@ -1,6 +1,8 @@
-
-
-public class BasicFood implements FoodItem { //made by Marko Obsivac
+/**
+ * Leaf node in the Composite pattern.
+ * Stores nutritional data directly — no recursion.
+ */
+public class BasicFood implements FoodItem {
     private final String name;
     private final double calories;
     private final double fat;
@@ -19,7 +21,7 @@ public class BasicFood implements FoodItem { //made by Marko Obsivac
     @Override public double getCalories()     { return calories; }
     @Override public Nutrients getNutrients() { return new Nutrients(fat, carb, protein); }
 
-   
+    /** b,name,calories,fat,carb,protein */
     @Override
     public String toCSV() {
         return String.format("b,%s,%.1f,%.1f,%.1f,%.1f", name, calories, fat, carb, protein);

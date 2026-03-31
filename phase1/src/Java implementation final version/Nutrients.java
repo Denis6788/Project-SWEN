@@ -1,5 +1,7 @@
-
-public class Nutrients { // made by Denis Keselj and Marko Obsivac
+/**
+ * Value object holding fat, carb, and protein grams for one serving.
+ */
+public class Nutrients {
     private double fat;
     private double carb;
     private double protein;
@@ -15,7 +17,7 @@ public class Nutrients { // made by Denis Keselj and Marko Obsivac
     public double getProtein() { return protein; }
     public double getTotal()   { return fat + carb + protein; }
 
-    
+    /** Returns a new Nutrients scaled by servings and added to this. */
     public Nutrients addScaled(Nutrients other, double servings) {
         return new Nutrients(
             this.fat     + other.fat     * servings,
@@ -32,6 +34,7 @@ public class Nutrients { // made by Denis Keselj and Marko Obsivac
         return percent(carb);
     }
 
+    /** Computed as remainder so fat+carb+protein always sums to exactly 100. */
     public int proteinPercent() {
         if (getTotal() == 0) return 0;
         return 100 - percent(fat) - percent(carb);

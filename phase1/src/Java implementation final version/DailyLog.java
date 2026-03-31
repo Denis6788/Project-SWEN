@@ -1,10 +1,12 @@
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class DailyLog { //made b Gabriel Muskaj
+/**
+ * presents one day of logging.
+ * Stores food entries, weight and calorie limit.
+ */
+public class DailyLog {
 
     private final LocalDate date;
     private final List<LogEntry> entries;
@@ -26,8 +28,9 @@ public class DailyLog { //made b Gabriel Muskaj
     }
 
     public List<LogEntry> getEntries() {
-        return new ArrayList<>(entries);
+        return entries; 
     }
+
     public double getWeight() {
         return weight;
     }
@@ -44,12 +47,13 @@ public class DailyLog { //made b Gabriel Muskaj
         return hasCalorieLimit;
     }
 
+    // setting weight
     public void setWeight(double weight) {
         this.weight = weight;
         this.hasWeight = true;
     }
 
-   
+    // setting calorie 
     public void setCalorieLimit(double calorieLimit) {
         this.calorieLimit = calorieLimit;
         this.hasCalorieLimit = true;
@@ -59,13 +63,19 @@ public class DailyLog { //made b Gabriel Muskaj
         entries.add(entry);
     }
 
-   
+    // removing entry 
     public void removeEntry(int index) {
-        if (index >= 0 && index < entries.size()) {
+        if (entries != null && index >= 0 && index < entries.size()) {
             entries.remove(index);
         }
     }
 
+    // reset button
+    public void clearEntries() {
+        entries.clear();
+    }
+
+    // calculating total calories for the day
     public double getTotalCalories() {
         double total = 0;
         for (LogEntry e : entries) {
@@ -74,7 +84,7 @@ public class DailyLog { //made b Gabriel Muskaj
         return total;
     }
 
-   
+    // calculating total nutrients 
     public Nutrients getTotalNutrients() {
         Nutrients total = new Nutrients(0, 0, 0);
 

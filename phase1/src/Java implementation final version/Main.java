@@ -1,4 +1,4 @@
-public class Main { //made and connected by Denis Keselj
+public class Main {
 
     public static void main(String[] args) {
 
