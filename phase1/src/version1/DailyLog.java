@@ -28,8 +28,9 @@ public class DailyLog {
     }
 
     public List<LogEntry> getEntries() {
-        return new ArrayList<>(entries);
+        return entries; 
     }
+
     public double getWeight() {
         return weight;
     }
@@ -64,9 +65,14 @@ public class DailyLog {
 
     // removing entry 
     public void removeEntry(int index) {
-        if (index >= 0 && index < entries.size()) {
+        if (entries != null && index >= 0 && index < entries.size()) {
             entries.remove(index);
         }
+    }
+
+    // reset button
+    public void clearEntries() {
+        entries.clear();
     }
 
     // calculating total calories for the day

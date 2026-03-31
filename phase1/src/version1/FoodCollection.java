@@ -1,5 +1,12 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Manages all foods in the system.
@@ -19,7 +26,7 @@ public class FoodCollection {
     public void addChangeListener(Runnable listener) { changeListeners.add(listener); }
     private void notifyListeners() { for (Runnable r : changeListeners) r.run(); }
 
-    // ── Collection operations ─────────────────────────────────────────────────
+    // Collection operations 
 
     public void addFood(FoodItem food) {
         if (foods.containsKey(food.getName()))
@@ -32,7 +39,7 @@ public class FoodCollection {
     public List<FoodItem> getAllFoods()       { return new ArrayList<>(foods.values()); }
     public int size()                         { return foods.size(); }
 
-    // ── Load from CSV ─────────────────────────────────────────────────────────
+    //  Load from CSV 
 
     public void load(String filePath) throws IOException {
         foods.clear();
@@ -107,7 +114,7 @@ public class FoodCollection {
             throw new IllegalArgumentException("Line " + lineNum + ": duplicate name '" + name + "'");
     }
 
-    // ── Save to CSV ───────────────────────────────────────────────────────────
+    //  Save to CSV 
 
     /**
      * Saves all foods to foods.csv.
