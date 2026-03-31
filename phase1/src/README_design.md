@@ -60,5 +60,11 @@ Gabriel Muskaj: submitting the logManager file, and starting with Marko Obsivac 
 
 Marko  Obsivac: finishing his files to the final version, submits them on /src folder as source code, and starts to work on presentation.
 
+## Contribution //31.03.2026
 
+Gabriel Muskaj: finished with the logic and worked with javafx (GUI). Submitted: DailyLog, LogController, LogEntry, LogManager, Main-MainApp.
 
+## Compiling And Running The App
+Compiling: javac --module-path "C:\javafx\javafx-sdk-17.0.18\lib" --add-modules javafx.controls *.java
+Running: java --module-path "C:\javafx\javafx-sdk-17.0.18\lib" --add-modules javafx.controls MainApp 
+The path is based on students workspace and can be different for others.
