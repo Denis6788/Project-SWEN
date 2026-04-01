@@ -1,5 +1,5 @@
-Name: <Marko Obsivac>
-Account: <mo3854>
-Have you been on co-op? <yes>
-List 1 to 3 programming languages you know: <Java> <JavaScript> <Php>
-List 1 to 3 hobbies or interests: <running> <reading> <tennis>
+Name: <Denis>
+Account: <dk5599>
+Have you been on co-op? <No>
+List 1 to 3 programming languages you know: <Python> <Java> <HTML>
+List 1 to 3 hobbies or interests: <Drawing> <Painting> <Writing>
