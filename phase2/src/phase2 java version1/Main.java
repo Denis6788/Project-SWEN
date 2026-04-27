@@ -1,25 +1,28 @@
-
 public class Main {
 
     public static void main(String[] args) {
 
-        AppController controller = new AppController();
+        try {
+            FoodCollection foods = new FoodCollection();
+            foods.load("foods.csv");
 
-        controller.createFood("Apple", 95, 0.3, 25, 0.5);
-        controller.createExercise("Run", 400);
+            ExerciseCollection exercises = new ExerciseCollection(); // NEW
+            exercises.load("exercise.csv");
 
-        Log log = controller.getLog();
+            LogManager logManager = new LogManager();
 
-        Observer view = () -> {
-            System.out.println("Consumed: " + log.consumed());
-            System.out.println("Burned: " + log.burned());
-            System.out.println("Net: " + log.net());
-            System.out.println("-----");
-        };
+            // NEW: connect exercises
+            logManager.setExerciseCollection(exercises);
 
-        log.addObserver(view);
+            logManager.load("log.csv", foods);
 
-        controller.addFoodToLog("Apple", 2);
-        controller.addExerciseToLog("Run", 30);
+            AppController controller =
+                    new AppController(foods, logManager, exercises); // UPDATED
+
+            controller.showSummary();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
