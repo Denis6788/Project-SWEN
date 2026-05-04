@@ -3,149 +3,160 @@ import java.time.LocalDate;
 import java.util.*;
 
 /**
- * Manages all daily logs.
- * UPDATED: now supports exercises
+ * Manages the collection of DailyLog objects.
+ * Loads and saves to log.csv in the format specified by the project.
  */
 public class LogManager {
 
-    private final Map<LocalDate, DailyLog> logs = new HashMap<>();
-
-    // NEW: reference to exercises
+    private final Map<LocalDate, DailyLog> logs = new TreeMap<>(); 
     private ExerciseCollection exerciseCollection;
 
-    // NEW: setter to connect exercises
     public void setExerciseCollection(ExerciseCollection ec) {
         this.exerciseCollection = ec;
     }
 
+
+     // accessors
     public DailyLog getOrCreate(LocalDate date) {
-        return logs.computeIfAbsent(date, d -> new DailyLog(d));
+        if (!logs.containsKey(date)) {
+            DailyLog newLog = new DailyLog(date);
+            applyMostRecentDefaults(newLog, date);
+            logs.put(date, newLog);
+        }
+        return logs.get(date);
     }
 
     public DailyLog getLog(LocalDate date) {
         return logs.get(date);
     }
 
-    // UPDATED: now loads exercises too
+    //loading the logs from the given CSV file, and populating the logs map
     public void load(String filePath, FoodCollection foodCollection) throws IOException {
         logs.clear();
 
         File file = new File(filePath);
         if (!file.exists()) return;
 
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty()) continue;
+                // spliting on first 4 commas only
+                String[] parts = line.split(",");
+                if (parts.length < 4) continue;
 
-        while ((line = reader.readLine()) != null) {
+                try {
+                    int  year  = Integer.parseInt(parts[0].trim());
+                    int  month = Integer.parseInt(parts[1].trim());
+                    int  day   = Integer.parseInt(parts[2].trim());
+                    String type = parts[3].trim();
 
-            String[] parts = line.split(",");
+                    LocalDate date = LocalDate.of(year, month, day);
+                    DailyLog  log  = logs.computeIfAbsent(date, DailyLog::new);
 
-            int year = Integer.parseInt(parts[0]);
-            int month = Integer.parseInt(parts[1]);
-            int day = Integer.parseInt(parts[2]);
+                    switch (type) {
+                        case "w":
+                            if (parts.length > 4) {
+                                log.setWeight(Double.parseDouble(parts[4].trim()));
+                            }
+                            break;
 
-            LocalDate date = LocalDate.of(year, month, day);
-            String type = parts[3];
+                        case "c":
+                            if (parts.length > 4) {
+                                log.setCalorieLimit(Double.parseDouble(parts[4].trim()));
+                            }
+                            break;
 
-            DailyLog log = getOrCreate(date);
+                        case "f":
+                            if (foodCollection != null && parts.length > 5) {
+                                String foodName = parts[4].trim();
+                                double servings = Double.parseDouble(parts[5].trim());
+                                Food food = foodCollection.findFood(foodName);
+                                if (food != null) {
+                                    log.addEntry(new LogEntry(food, servings));
+                                } else {
+                                    System.err.println("Warning: food '" + foodName
+                                            + "' not found while loading log.");
+                                }
+                            }
+                            break;
 
-            switch (type) {
+                        case "e":
+                            if (exerciseCollection != null && parts.length > 5) {
+                                String exName = parts[4].trim();
+                                double minutes = Double.parseDouble(parts[5].trim());
+                                Exercise ex = exerciseCollection.find(exName);
+                                if (ex != null) {
+                                    log.addExercise(new ExerciseEntry(ex, minutes));
+                                } else {
+                                    System.err.println("Warning: exercise '" + exName
+                                            + "' not found while loading log.");
+                                }
+                            }
+                            break;
 
-                case "w":
-                    log.setWeight(Double.parseDouble(parts[4]));
-                    break;
-
-                case "c":
-                    log.setCalorieLimit(Double.parseDouble(parts[4]));
-                    break;
-
-                case "f":
-                    String foodName = parts[4];
-                    double servings = Double.parseDouble(parts[5]);
-
-                    FoodItem food = foodCollection.findFood(foodName);
-                    if (food != null) {
-                        log.addEntry(new LogEntry(food, servings));
+                        default:
+                            break;
                     }
-                    break;
 
-                // NEW: load exercise
-                case "e":
-                    if (exerciseCollection != null) {
-                        String exName = parts[4];
-                        double minutes = Double.parseDouble(parts[5]);
-
-                        Exercise ex = exerciseCollection.find(exName);
-                        if (ex != null) {
-                            log.addExercise(new ExerciseEntry(ex, minutes));
-                        }
-                    }
-                    break;
+                } catch (Exception ex) {
+                    System.err.println("Skipping malformed log line: " + line);
+                }
             }
         }
-
-        reader.close();
-        applyDefaults();
     }
 
-    private void applyDefaults() {
-        double lastWeight = 150.0;
-        double lastCalories = 2000.0;
-
-        List<LocalDate> dates = new ArrayList<>(logs.keySet());
-        Collections.sort(dates);
-
-        for (LocalDate date : dates) {
-            DailyLog log = logs.get(date);
-
-            if (!log.hasWeight()) log.setWeight(lastWeight);
-            else lastWeight = log.getWeight();
-
-            if (!log.hasCalorieLimit()) log.setCalorieLimit(lastCalories);
-            else lastCalories = log.getCalorieLimit();
-        }
-    }
-
-    // UPDATED: now saves exercises too
+    //saving all logs to the given CSV file in the specified format
     public void save(String filePath) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+            for (Map.Entry<LocalDate, DailyLog> entry : logs.entrySet()) {
+                LocalDate date = entry.getKey();
+                DailyLog  log  = entry.getValue();
 
-        List<LocalDate> dates = new ArrayList<>(logs.keySet());
-        Collections.sort(dates);
+                int y = date.getYear();
+                int m = date.getMonthValue();
+                int d = date.getDayOfMonth();
 
-        for (LocalDate date : dates) {
+                if (log.hasWeight()) {
+                    writer.write(String.format("%d,%02d,%02d,w,%.1f", y, m, d, log.getWeight()));
+                    writer.newLine();
+                }
 
-            DailyLog log = logs.get(date);
+                if (log.hasCalorieLimit()) {
+                    writer.write(String.format("%d,%02d,%02d,c,%.1f", y, m, d, log.getCalorieLimit()));
+                    writer.newLine();
+                }
 
-            int y = date.getYear();
-            int m = date.getMonthValue();
-            int d = date.getDayOfMonth();
+                for (LogEntry le : log.getEntries()) {
+                    writer.write(String.format("%d,%02d,%02d,f,%s,%.1f",
+                            y, m, d, le.getFood().getName(), le.getServings()));
+                    writer.newLine();
+                }
 
-            writer.write(String.format("%d,%02d,%02d,w,%.1f", y, m, d, log.getWeight()));
-            writer.newLine();
-
-            writer.write(String.format("%d,%02d,%02d,c,%.1f", y, m, d, log.getCalorieLimit()));
-            writer.newLine();
-
-            for (LogEntry entry : log.getEntries()) {
-                writer.write(String.format("%d,%02d,%02d,f,%s,%.1f",
-                        y, m, d,
-                        entry.getFood().getName(),
-                        entry.getServings()));
-                writer.newLine();
-            }
-
-            // NEW: save exercises
-            for (ExerciseEntry entry : log.getExercises()) {
-                writer.write(String.format("%d,%02d,%02d,e,%s,%.1f",
-                        y, m, d,
-                        entry.getExercise().getName(),
-                        entry.getMinutes()));
-                writer.newLine();
+                for (ExerciseEntry ee : log.getExercises()) {
+                    writer.write(String.format("%d,%02d,%02d,e,%s,%.1f",
+                            y, m, d, ee.getExercise().getName(), ee.getMinutes()));
+                    writer.newLine();
+                }
             }
         }
+    }
 
-        writer.close();
+    // helper method to apply the most recent weight and calorie limit defaults to a new log
+    private void applyMostRecentDefaults(DailyLog newLog, LocalDate date) {
+        Double lastWeight  = null;
+        Double lastCalories = null;
+
+        for (Map.Entry<LocalDate, DailyLog> e : logs.entrySet()) {
+            if (!e.getKey().isBefore(date)) continue; // only look at earlier dates
+            DailyLog prior = e.getValue();
+            if (prior.hasWeight())        lastWeight   = prior.getWeight();
+            if (prior.hasCalorieLimit())  lastCalories = prior.getCalorieLimit();
+        }
+
+        if (lastWeight   != null) newLog.setWeight(lastWeight);
+        if (lastCalories != null) newLog.setCalorieLimit(lastCalories);
     }
 }

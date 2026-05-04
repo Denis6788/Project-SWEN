@@ -1,16 +1,18 @@
-
-e,Walking (2 mph),102.0
-e,Walking (4 mph),204.0
-e,Running (6 mph),454.0
-e,Running (10 mph),680.0
-e,Swimming (vigorous),454.0
-e,Pilates,181.0
-e,Stretching,90.0
-e,Rowing (moderate),318.0
-e,Stair Climbing,340.0
-e,Aerobics (low impact),204.0
-e,Aerobics (high impact),295.0
-e,Crossfit,454.0
-e,Tennis,318.0
-e,Soccer,363.0
-e,Volleyball,136.0
+e,Aerobics (low impact),295.0
+e,Aerobics (high impact),414.0
+e,Soccer,476.0
+e,Rowing (moderate),502.0
+e,Gardening,180.0
+e,Running (6 mph),590.0
+e,Swimming (vigorous),590.0
+e,Walking (2 mph),148.0
+e,Stretching,148.0
+e,Running (10 mph),885.0
+e,Tennis,414.0
+e,Pilates,208.0
+e,Bicycling (14-16 mph),454.0
+e,Stair Climbing,590.0
+e,Jogging (5 mph),364.0
+e,Walking (4 mph),295.0
+e,Volleyball,208.0
+e,Crossfit,590.0
